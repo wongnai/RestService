@@ -1,0 +1,31 @@
+{
+  "name": "request-dynamic-wrapper",
+  "version": "0.0.0",
+  "description": "A wrapper around requestjs to attach unique parameter of each client request.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chinclubi/request-dynamic-wrapper.git"
+  },
+  "keywords": [
+    "request",
+    "requestjs",
+    "dynamic"
+  ],
+  "author": "Chinnaporn Soonue <chinnaporn.s@ku.th>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chinclubi/request-dynamic-wrapper/issues"
+  },
+  "homepage": "https://github.com/chinclubi/request-dynamic-wrapper#readme",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "bunyan": "^1.8.1",
+    "crypto": "0.0.3",
+    "lodash": "^4.15.0",
+    "request": "^2.74.0"
+  }
+}
