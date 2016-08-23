@@ -4,7 +4,8 @@
   "description": "A wrapper around requestjs to attach unique parameter of each client request.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine",
+    "test:w": "nodemon --watch app --watch spec --exec jasmine"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "bluebird": "^3.4.1",
     "bunyan": "^1.8.1",
     "crypto": "0.0.3",
+    "jasmine": "^2.4.1",
     "lodash": "^4.15.0",
     "request": "^2.74.0"
   }
