@@ -1,7 +1,10 @@
 'use strict'
 let RequestAsync = require(`../lib/requestasync`)
 let Promise = require(`bluebird`)
-let { init, reset, RestClient } = require(`../lib/RestService`)
+let RestService = require(`../lib/RestService`)
+let init = RestService.init
+let reset = RestService.reset
+let RestClient = RestService.RestClient
 
 let apiUrl = () => {
   return `http://example.com`
