@@ -1,6 +1,6 @@
 {
   "name": "rest-service-js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A wrapper around requestjs to attach unique parameter of each client request.",
   "main": "index.js",
   "scripts": {
