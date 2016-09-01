@@ -5,3 +5,4 @@ node_js:
   - "5.1"
 install:
   - npm install
+after_success: "npm install coveralls && cat ./coverage/lcov.info | coveralls"
