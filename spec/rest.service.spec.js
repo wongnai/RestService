@@ -34,6 +34,7 @@ describe(`call getOptions method in restFactory`, () => {
         method: method,
         json: true,
         body: body,
+        forever: true,
         timeout: 10000,
       }
 
@@ -48,6 +49,7 @@ describe(`call getOptions method in restFactory`, () => {
         url: `${apiUrl()}${path}`,
         method: method,
         json: true,
+        forever: true,
         timeout: 10000,
       }
 
@@ -62,6 +64,7 @@ describe(`call getOptions method in restFactory`, () => {
         url: `${apiUrl()}${path}`,
         method: method,
         timeout: 10000,
+        forever: true,
         formData: body,
       }
 
@@ -126,6 +129,7 @@ describe(`create request with header`, () => {
       method: method,
       json: true,
       headers: headers,
+      forever: true,
       timeout: 10000
     }
 
