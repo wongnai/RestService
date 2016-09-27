@@ -1,5 +1,5 @@
 # RestService
-[![Build Status](https://travis-ci.org/chinclubi/RestService.svg?branch=master)](https://travis-ci.org/chinclubi/RestService) [![Coverage Status](https://coveralls.io/repos/github/chinclubi/RestService/badge.svg?branch=master)](https://coveralls.io/github/chinclubi/RestService?branch=master)
+[![Build Status](https://travis-ci.org/wongnai/RestService.svg?branch=master)](https://travis-ci.org/wongnai/RestService) [![![Coverage Status](https://coveralls.io/repos/github/wongnai/RestService/badge.svg)](https://coveralls.io/github/wongnai/RestService)
 
 [![NPM](https://nodei.co/npm/rest-service-js.png)](https://nodei.co/npm/rest-service-js/)
 
