@@ -216,9 +216,12 @@ describe(`call request method but got bad request response`, () => {
     }
     spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
 
-    restClient.post(`/testUrl`, {})
+    restClient.post(`/testUrl`, {data: '1'})
       .error((e) => {
         expect(e.isOperational).toEqual(true)
+        expect(e.request.url).toEqual('URL/testUrl')
+        expect(e.request.method).toEqual("post")
+        expect(e.request.body).toEqual({data: '1'})
         expect(e.body).toEqual(response.body)
         expect(e).toEqual(jasmine.any(Error))
         done()
