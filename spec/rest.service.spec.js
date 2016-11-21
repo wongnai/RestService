@@ -104,6 +104,13 @@ describe(`RestClient`, () => {
     const tmp = RestClient.test()
     expect(tmp.headers).toEqual({ 'X-HEADER': 1 })
   })
+  it(`add header after doing something`, () => {
+    init({ clients: [{type: `test`, url: `testHeaderUrl`, headers: [`test`]}]})
+    const tmp = RestClient.test({ headers })
+    expect(tmp.headers).toEqual({ 'x-forwarded-for': `HeaderValue` })
+    tmp.setHeaders({ authorization: `this is a token`})
+    expect(tmp.headers).toEqual({ 'x-forwarded-for': `HeaderValue`, authorization: `this is a token` })
+  })
 })
 
 describe(`create request with header`, () => {
