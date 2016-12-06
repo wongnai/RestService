@@ -267,7 +267,7 @@ describe(`create rest client with interceptor`, () => {
     restClient.get(`/test`)
       .then(r => {
         expect(restClient.interceptor.success).toHaveBeenCalledTimes(1)
-        expect(restClient.interceptor.success).toHaveBeenCalledWith(jasmine.objectContaining({url: `URL/test`}), `body`)
+        expect(restClient.interceptor.success).toHaveBeenCalledWith(jasmine.objectContaining({url: `URL/test`}), response)
         expect(restClient.interceptor.error).not.toHaveBeenCalled()
         done()
       })
