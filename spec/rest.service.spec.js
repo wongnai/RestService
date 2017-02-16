@@ -26,6 +26,27 @@ describe(`call getOptions method in restFactory`, () => {
     reset()
   })
 
+  describe('init option', () => {
+    beforeEach(() => {
+      init({ clients: [{ type: `highTimeout`, url: apiUrl(), timeout: 40000 }] })
+      request = RestClient.highTimeout()
+      spyOn(request, `getOptions`).and.callThrough()
+    })
+    it('call with correct timeout', () => {
+      let result = request.getOptions(path, method, body)
+      let expected = {
+        url: `${apiUrl()}${path}`,
+        method: method,
+        json: true,
+        body: body,
+        forever: true,
+        timeout: 40000,
+      }
+
+      expect(result).toEqual(expected)
+    })
+  })
+
   describe(`with path, method, and body parameter`, () => {
     it(`should response object include body property`, () => {
       let result = request.getOptions(path, method, body)
