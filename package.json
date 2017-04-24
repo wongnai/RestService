@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jasmine",
-    "test:w": "nodemon --watch app --watch spec --exec jasmine"
+    "test:w": "nodemon --watch lib --watch spec --exec jasmine"
   },
   "repository": {
     "type": "git",
