@@ -47,6 +47,29 @@ describe(`call getOptions method in restFactory`, () => {
     })
   })
 
+  describe('dynamic option, url and method cannot be overrided', () => {
+    beforeEach(() => {
+      let dynaimcOptions = {forever: false, url: '', method: 'xx', pool: 5}
+      init({ clients: [{ type: `highTimeout`, url: apiUrl(), timeout: 40000, options: dynaimcOptions }] })
+      request = RestClient.highTimeout()
+      spyOn(request, `getOptions`).and.callThrough()
+    })
+    it('call with correct timeout', () => {
+      let result = request.getOptions(path, method, body)
+      let expected = {
+        url: `${apiUrl()}${path}`,
+        method: method,
+        json: true,
+        body: body,
+        forever: false,
+        timeout: 40000,
+        pool: 5,
+      }
+
+      expect(result).toEqual(expected)
+    })
+  })
+
   describe(`with path, method, and body parameter`, () => {
     it(`should response object include body property`, () => {
       let result = request.getOptions(path, method, body)
@@ -110,27 +133,27 @@ describe(`RestClient`, () => {
     expect(RestClient.test1).toBeDefined()
 
     const tmp = RestClient.test1({ headers })
-    expect(tmp.headers).toEqual({ 'x-forwarded-for': `HeaderValue` })
+    expect(tmp.getHeaders()).toEqual({ 'x-forwarded-for': `HeaderValue` })
     expect(tmp.baseApi).toEqual(RestConfig.clients[0].url)
   })
   it(`defaultHeaders should apply to all client`, () => {
     init(RestConfig)
     const test1 = RestClient.test1({ headers })
     const test2 = RestClient.test2({ headers })
-    expect(test1.headers).toEqual({ 'x-forwarded-for': `HeaderValue` })
-    expect(test2.headers).toEqual({ 'x-forwarded-for': `HeaderValue` })
+    expect(test1.getHeaders()).toEqual({ 'x-forwarded-for': `HeaderValue` })
+    expect(test2.getHeaders()).toEqual({ 'x-forwarded-for': `HeaderValue` })
   })
   it(`set unique header for each client`, () => {
     init({ clients: [{ type: `test`, url: `testHeaderUrl`, headers: [`TEST-HEADER`, { 'X-HEADER': 1 }] }] })
     const tmp = RestClient.test()
-    expect(tmp.headers).toEqual({ 'X-HEADER': 1 })
+    expect(tmp.getHeaders()).toEqual({ 'X-HEADER': 1 })
   })
   it(`add header after doing something`, () => {
     init({ clients: [{type: `test`, url: `testHeaderUrl`, headers: [`test`]}]})
     const tmp = RestClient.test({ headers })
-    expect(tmp.headers).toEqual({ 'x-forwarded-for': `HeaderValue` })
+    expect(tmp.getHeaders()).toEqual({ 'x-forwarded-for': `HeaderValue` })
     tmp.setHeaders({ authorization: `this is a token`})
-    expect(tmp.headers).toEqual({ 'x-forwarded-for': `HeaderValue`, authorization: `this is a token` })
+    expect(tmp.getHeaders()).toEqual({ 'x-forwarded-for': `HeaderValue`, authorization: `this is a token` })
   })
   it(`return correct value from header function`, () => {
     init({ 
@@ -139,7 +162,7 @@ describe(`RestClient`, () => {
       ]
     })
     const tmp = RestClient.test({ headers })
-    expect(tmp.headers).toEqual({ 'x-forwarded-for': `HeaderValue`, 'testFunctionHeader': `wongnai` })
+    expect(tmp.getHeaders()).toEqual({ 'x-forwarded-for': `HeaderValue`, 'testFunctionHeader': `wongnai` })
   })
 })
 
