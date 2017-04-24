@@ -266,13 +266,12 @@ describe(`call request method but got bad request response`, () => {
   })
 })
 
-describe(`create rest client with interceptor`, () => {
+describe(`partial interceptor`, () => {
   let restClient
 
   beforeEach(() => {
     init({ clients: [{ type: `TEST`, url : `URL`, interceptor: { 
-      success : jasmine.createSpy(`success`),
-      error   : jasmine.createSpy(`error`)
+      success : jasmine.createSpy(`success`)
     }}]})
     restClient = RestClient.TEST()
   })
@@ -287,6 +286,36 @@ describe(`create rest client with interceptor`, () => {
 
     restClient.get(`/test`)
       .then(r => {
+        expect(restClient.interceptor.success).toHaveBeenCalledTimes(1)
+        expect(restClient.interceptor.success).toHaveBeenCalledWith(jasmine.objectContaining({url: `URL/test`}), response)
+        done()
+      })
+  })
+})
+
+describe(`create rest client with interceptor`, () => {
+  let restClient
+
+  beforeEach(() => {
+    init({ clients: [{ type: `TEST`, url : `URL`, interceptor: { 
+      success : jasmine.createSpy(`success`),
+      error   : jasmine.createSpy(`error`),
+      before  : jasmine.createSpy(`before`),
+    }}]})
+    restClient = RestClient.TEST()
+  })
+
+  afterEach(() => {
+    reset()
+  })
+
+  it(`should call interceptor.success function when request is success`, (done) => {
+    let response = { statusCode: 200, body: `body`}
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    restClient.get(`/test`)
+      .then(r => {
+        expect(restClient.interceptor.before).toHaveBeenCalledTimes(1)
         expect(restClient.interceptor.success).toHaveBeenCalledTimes(1)
         expect(restClient.interceptor.success).toHaveBeenCalledWith(jasmine.objectContaining({url: `URL/test`}), response)
         expect(restClient.interceptor.error).not.toHaveBeenCalled()
@@ -308,7 +337,7 @@ describe(`create rest client with interceptor`, () => {
   })
 
   it(`should thow an error when init interceptor type is incorrect`, (done) => {
-    let initBindUndefinedSuccessAndError = init.bind(null, {clients: [{ type: `TEST`, url : `URL`, interceptor: {}}]})
+    let initBindUndefinedSuccessAndError = init.bind(null, {clients: [{ type: `TEST`, url : `URL`, interceptor: '123'}]})
     let initBindInvalidSuccessAndErrorType = init.bind(null, {clients: [{ type: `TEST`, url : `URL`, interceptor: { success: `123123`, error: `123123123`}}]})
     expect(initBindUndefinedSuccessAndError).toThrowError(Error)
     expect(initBindInvalidSuccessAndErrorType).toThrowError(Error)
