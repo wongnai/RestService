@@ -359,11 +359,139 @@ describe(`create rest client with interceptor`, () => {
       })
   })
 
-  it(`should thow an error when init interceptor type is incorrect`, (done) => {
+  it(`should throw an error when init interceptor type is incorrect`, (done) => {
     let initBindUndefinedSuccessAndError = init.bind(null, {clients: [{ type: `TEST`, url : `URL`, interceptor: '123'}]})
     let initBindInvalidSuccessAndErrorType = init.bind(null, {clients: [{ type: `TEST`, url : `URL`, interceptor: { success: `123123`, error: `123123123`}}]})
     expect(initBindUndefinedSuccessAndError).toThrowError(Error)
     expect(initBindInvalidSuccessAndErrorType).toThrowError(Error)
     done()
+  })
+})
+
+describe('custom options', () => {
+  let request
+  let path = `/testUrl`
+  let method = `post`
+  let response = {
+    statusCode: 200,
+    body: `res`,
+  }
+  const customOption = {
+    headers: {
+      apiKey: 'mock',
+    },
+  }
+
+  beforeEach(() => {
+    init({ clients: [{ type: `wongnaiTest`, url: apiUrl() }] })
+    request = RestClient.wongnaiTest()
+    spyOn(request, `getOptions`).and.callThrough()
+  })
+
+  afterEach(() => {
+    reset()
+  })
+
+  it('should combine two option objects', () => {
+    const customOption = {
+      test: {
+        test1: 1,
+      },
+    }
+    const defaultOption = {
+      test: {
+        test1: 2,
+        test2: 2,
+      },
+    }
+    expect(request.combineOption(customOption, defaultOption)).toEqual({
+      test: {
+        test1: 1,
+        test2: 2,
+      }
+    })
+  })
+
+  it('should perform get with custom option', () => {
+    let option = request.getOptions(path, `get`)
+
+    let combinedOption = request.combineOption(customOption, option)
+
+    spyOn(request, `get`).and.callThrough()
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.get(path, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith(combinedOption)
+    expect(RequestAsync.request).toHaveBeenCalledTimes(1)
+    expect(request.get).toHaveBeenCalledWith(path, combinedOption)
+    expect(request.get).toHaveBeenCalledTimes(1)
+  })
+
+  it('should perform post with custom option', () => {
+    let body = { test: `TEXT` }
+    let option = request.getOptions(path, `post`, body)
+
+    let combinedOption = request.combineOption(customOption, option)
+
+    spyOn(request, `post`).and.callThrough()
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.post(path, body, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith(combinedOption)
+    expect(RequestAsync.request).toHaveBeenCalledTimes(1)
+    expect(request.post).toHaveBeenCalledWith(path, body, combinedOption)
+    expect(request.post).toHaveBeenCalledTimes(1)
+  })
+
+  it('should perform put with custom option', () => {
+    let body = { test: `TEXT` }
+    let option = request.getOptions(path, `put`, body)
+
+    let combinedOption = request.combineOption(customOption, option)
+
+    spyOn(request, `put`).and.callThrough()
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.put(path, body, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith(combinedOption)
+    expect(RequestAsync.request).toHaveBeenCalledTimes(1)
+    expect(request.put).toHaveBeenCalledWith(path, body, combinedOption)
+    expect(request.put).toHaveBeenCalledTimes(1)
+  })
+
+  it('should perform patch with custom option', () => {
+    let body = { test: `TEXT` }
+    let option = request.getOptions(path, `patch`, body)
+
+    let combinedOption = request.combineOption(customOption, option)
+
+    spyOn(request, `patch`).and.callThrough()
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.patch(path, body, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith(combinedOption)
+    expect(RequestAsync.request).toHaveBeenCalledTimes(1)
+    expect(request.patch).toHaveBeenCalledWith(path, body, combinedOption)
+    expect(request.patch).toHaveBeenCalledTimes(1)
+  })
+
+  it('should perform delete with custom option', () => {
+    let option = request.getOptions(path, `delete`)
+
+    let combinedOption = request.combineOption(customOption, option)
+
+    spyOn(request, `delete`).and.callThrough()
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.delete(path, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith(combinedOption)
+    expect(RequestAsync.request).toHaveBeenCalledTimes(1)
+    expect(request.delete).toHaveBeenCalledWith(path, combinedOption)
+    expect(request.delete).toHaveBeenCalledTimes(1)
   })
 })
