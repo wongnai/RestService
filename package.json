@@ -9,19 +9,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chinclubi/RestService.git"
+    "url": "git+https://github.com/wongnai/RestService.git"
   },
   "keywords": [
     "request",
     "requestjs",
     "dynamic"
   ],
-  "author": "Chinnaporn Soonue <chinnaporn.s@ku.th>",
+  "author": "Tanapol Nearunchorn <tanapoln@wongnai.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chinclubi/RestService/issues"
+    "url": "https://github.com/wongnai/RestService/issues"
   },
-  "homepage": "https://github.com/chinclubi/RestService#readme",
+  "homepage": "https://github.com/wongnai/RestService#readme",
   "dependencies": {
     "bluebird": "^3.4.1",
     "bunyan": "^1.8.1",
