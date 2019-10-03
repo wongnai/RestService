@@ -359,11 +359,152 @@ describe(`create rest client with interceptor`, () => {
       })
   })
 
-  it(`should thow an error when init interceptor type is incorrect`, (done) => {
+  it(`should throw an error when init interceptor type is incorrect`, (done) => {
     let initBindUndefinedSuccessAndError = init.bind(null, {clients: [{ type: `TEST`, url : `URL`, interceptor: '123'}]})
     let initBindInvalidSuccessAndErrorType = init.bind(null, {clients: [{ type: `TEST`, url : `URL`, interceptor: { success: `123123`, error: `123123123`}}]})
     expect(initBindUndefinedSuccessAndError).toThrowError(Error)
     expect(initBindInvalidSuccessAndErrorType).toThrowError(Error)
     done()
+  })
+})
+
+describe('custom options', () => {
+  let request
+  let path = `/testUrl`
+  let response = {
+    statusCode: 200,
+    body: `res`,
+  }
+  const body = {
+    data: 'some-data'
+  }
+
+  const customOption = {
+    headers: {
+      apiToken: 'test',
+    },
+  }
+
+  beforeEach(() => {
+    init({ clients: [{ type: `wongnaiTest`, url: apiUrl() }] })
+    request = RestClient.wongnaiTest()
+  })
+
+  afterEach(() => {
+    reset()
+  })
+
+  it('should combine two option objects', () => {
+    const defaultOption = {
+      url: `${apiUrl()}${path}`,
+      method: 'get',
+      json: true,
+      forever: true,
+      timeout: 10000,
+    }
+    expect(request.combineOption(customOption, defaultOption)).toEqual({
+      url: `${apiUrl()}${path}`,
+      method: 'get',
+      json: true,
+      forever: true,
+      timeout: 10000,
+      headers: {
+        apiToken: 'test',
+      },
+    })
+  })
+
+  it('should perform get with custom option', () => {
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.get(path, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith({
+      url: `${apiUrl()}${path}`,
+      method: 'get',
+      json: true,
+      forever: true,
+      timeout: 10000,
+      headers: {
+        apiToken: 'test',
+      },
+    })
+  })
+
+  it('should perform post with custom option', () => {
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.post(path, body, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith({
+      url: `${apiUrl()}${path}`,
+      method: 'post',
+      json: true,
+      forever: true,
+      timeout: 10000,
+      body: {
+        data: 'some-data',
+      },
+      headers: {
+        apiToken: 'test',
+      },
+    })
+  })
+
+  it('should perform patch with custom option', () => {
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.patch(path, body, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith({
+      url: `${apiUrl()}${path}`,
+      method: 'patch',
+      json: true,
+      forever: true,
+      timeout: 10000,
+      body: {
+        data: 'some-data',
+      },
+      headers: {
+        apiToken: 'test',
+      },
+    })
+  })
+
+  it('should perform put with custom option', () => {
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.put(path, body, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith({
+      url: `${apiUrl()}${path}`,
+      method: 'put',
+      json: true,
+      forever: true,
+      timeout: 10000,
+      body: {
+        data: 'some-data',
+      },
+      headers: {
+        apiToken: 'test',
+      },
+    })
+  })
+
+  it('should perform delete with custom option', () => {
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    request.delete(path, customOption)
+
+    expect(RequestAsync.request).toHaveBeenCalledWith({
+      url: `${apiUrl()}${path}`,
+      method: 'delete',
+      json: true,
+      forever: true,
+      timeout: 10000,
+      headers: {
+        apiToken: 'test',
+      },
+    })
   })
 })
