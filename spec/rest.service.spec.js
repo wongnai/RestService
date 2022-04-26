@@ -257,7 +257,7 @@ describe(`create new request with createRequest factory`, () => {
   })
 })
 
-describe(`call request method but got bad request response`, () => {
+describe(`call request method but got 4xx response`, () => {
   let restClient
 
   beforeEach(() => {
@@ -269,7 +269,7 @@ describe(`call request method but got bad request response`, () => {
     reset()
   })
 
-  it(`should create Error element`, (done) => {
+  it(`400 should create Error element`, (done) => {
     let response = {
       statusCode: 400,
       body: `body`,
@@ -280,9 +280,51 @@ describe(`call request method but got bad request response`, () => {
       .error((e) => {
         expect(e.isOperational).toEqual(true)
         expect(e.request.url).toEqual('URL/testUrl')
-        expect(e.request.method).toEqual("post")
+        expect(e.request.method).toEqual('post')
         expect(e.request.body).toEqual({data: '1'})
         expect(e.body).toEqual(response.body)
+        expect(e.message).toBeUndefined()
+        expect(e).toEqual(jasmine.any(Error))
+        done()
+      })
+  })
+
+  it(`400 with message should create Error element with message`, (done) => {
+    let response = {
+      statusCode: 400,
+      body: {
+        message: `message`
+      },
+    }
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    restClient.post(`/testUrl`, {data: '1'})
+      .error((e) => {
+        expect(e.isOperational).toEqual(true)
+        expect(e.request.url).toEqual('URL/testUrl')
+        expect(e.request.method).toEqual('post')
+        expect(e.request.body).toEqual({data: '1'})
+        expect(e.body).toEqual(response.body)
+        expect(e.message).toEqual('message')
+        expect(e).toEqual(jasmine.any(Error))
+        done()
+      })
+  })
+
+  it(`403 without body should return correct Error elements`, (done) => {
+    let response = {
+      statusCode: 403,
+    }
+    spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
+
+    restClient.post(`/testUrl`, {data: '1'})
+      .error((e) => {
+        expect(e.isOperational).toEqual(true)
+        expect(e.request.url).toEqual('URL/testUrl')
+        expect(e.request.method).toEqual('post')
+        expect(e.request.body).toEqual({data: '1'})
+        expect(e.body).toBeUndefined()
+        expect(e.message).toEqual('No message available')
         expect(e).toEqual(jasmine.any(Error))
         done()
       })
@@ -346,14 +388,14 @@ describe(`create rest client with interceptor`, () => {
       })
   })
 
-  it(`shoold call interceptor.error function when request is error`, (done) => {
+  it(`should call interceptor.error function when request is error`, (done) => {
     let response = { statusCode: 400, body: `body`}
     spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
     
     restClient.get(`/test`)
       .error(e => {
         expect(restClient.interceptor.error).toHaveBeenCalledTimes(1)
-        expect(restClient.interceptor.error).toHaveBeenCalledWith(jasmine.objectContaining({url: `URL/test`}), new Error)
+        expect(restClient.interceptor.error).toHaveBeenCalledWith(jasmine.objectContaining({url: `URL/test`}), e)
         expect(restClient.interceptor.success).not.toHaveBeenCalled()
         done()
       })
