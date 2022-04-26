@@ -156,7 +156,7 @@ describe(`RestClient`, () => {
     expect(tmp.getHeaders()).toEqual({ 'x-forwarded-for': `HeaderValue`, authorization: `this is a token` })
   })
   it(`return correct value from header function`, () => {
-    init({ 
+    init({
       clients: [
         {type: `test`, url: `testHeaderUrl`, headers: [{ testFunctionHeader: () => { return `wongnai`}}]}
       ]
@@ -324,7 +324,7 @@ describe(`call request method but got 4xx response`, () => {
         expect(e.request.method).toEqual('post')
         expect(e.request.body).toEqual({data: '1'})
         expect(e.body).toBeUndefined()
-        expect(e.message).toEqual('No message available')
+        expect(e.message).toEqual('unsuccessful response')
         expect(e).toEqual(jasmine.any(Error))
         done()
       })
@@ -335,7 +335,7 @@ describe(`partial interceptor`, () => {
   let restClient
 
   beforeEach(() => {
-    init({ clients: [{ type: `TEST`, url : `URL`, interceptor: { 
+    init({ clients: [{ type: `TEST`, url : `URL`, interceptor: {
       success : jasmine.createSpy(`success`)
     }}]})
     restClient = RestClient.TEST()
@@ -362,7 +362,7 @@ describe(`create rest client with interceptor`, () => {
   let restClient
 
   beforeEach(() => {
-    init({ clients: [{ type: `TEST`, url : `URL`, interceptor: { 
+    init({ clients: [{ type: `TEST`, url : `URL`, interceptor: {
       success : jasmine.createSpy(`success`),
       error   : jasmine.createSpy(`error`),
       before  : jasmine.createSpy(`before`),
@@ -391,7 +391,7 @@ describe(`create rest client with interceptor`, () => {
   it(`should call interceptor.error function when request is error`, (done) => {
     let response = { statusCode: 400, body: `body`}
     spyOn(RequestAsync, `request`).and.returnValue(Promise.resolve(response))
-    
+
     restClient.get(`/test`)
       .error(e => {
         expect(restClient.interceptor.error).toHaveBeenCalledTimes(1)
